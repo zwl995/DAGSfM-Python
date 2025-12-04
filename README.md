@@ -2,6 +2,8 @@
 
 DAGSfM-Python是一个基于Python的Structure from Motion (SfM)系统，采用有向无环图(DAG)方法优化三维重建过程。该项目利用图论中的N-cut算法对场景进行分割，然后并行处理各个子块，最后合并结果以获得完整的三维重建。
 
+本项目是 [DAGSfM](https://github.com/AIBluefisher/DAGSfM) 的 Python 实现与优化版本，原项目由 Chen et al. 开发并用 C++ 实现。
+
 ## 项目架构
 
 本项目采用模块化设计，主要包含以下几个核心模块：
@@ -32,94 +34,84 @@ DAGSfM-Python/
 
 ## 核心模块说明
 
-### 1. 特征提取与匹配模块 ([features.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/dagsfm/features.py))
-负责从图像中提取特征点（如SIFT、SURF等）并进行特征匹配，构建图像间的匹配关系图。
+### 1. 特征提取与匹配模块 [features.py]
+负责从图像中提取特征点（如SIFT）并进行特征匹配，构建图像间的匹配关系图。
 
-### 2. 场景分块模块 ([partition.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/dagsfm/partition.py))
+### 2. 场景分块模块 [partition.py]
 基于N-cut算法对整个场景进行分割，将大型SfM问题分解为多个较小的子问题。该模块包含：
 - ViewGraphNode类：表示图像节点
 - ViewGraph类：管理视图图结构
 - NcutPartitioner类：实现N-cut分割算法
 
-### 3. 子块重建模块 ([reconstruction.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/dagsfm/reconstruction.py))
+### 3. 子块重建模块 [reconstruction.py]
 使用pycolmap或colmap对分割后的子块进行独立重建。
 
-### 4. 子块合并与BA模块 ([merging.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/dagsfm/merging.py))
+### 4. 子块合并与BA模块 [merging.py]
 将各个子块的重建结果进行配准和合并，并进行全局光束法平差(Bundle Adjustment)优化。
 
-### 5. 工作流管理模块 ([pipeline.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/dagsfm/pipeline.py))
+### 5. 工作流管理模块 [pipeline.py]
 使用CGraph的Python版本管理系统整体工作流程和模块间依赖关系。
-
-## 测试
-
-本项目为每个模块都提供了单元测试。可以通过以下方式运行测试：
-
-```bash
-# 运行所有测试
-python run_tests.py
-
-# 或者使用unittest模块运行测试
-python -m unittest discover tests/
-```
-
-测试文件说明：
-- [test_features.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_features.py): 测试特征提取与匹配模块
-- [test_partition.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_partition.py): 测试场景分块模块
-- [test_reconstruction.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_reconstruction.py): 测试子块重建模块
-- [test_merging.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_merging.py): 测试子块合并与BA模块
-- [test_pipeline.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_pipeline.py): 测试工作流管理模块
-- [test_utils.py](file:///ws/zwl/Code/SfM/DAGSfM-Python/tests/test_utils.py): 测试工具函数模块
-
-## 设计模式选择
-
-本项目采用了以下几种设计模式来保证系统的可扩展性和可维护性：
-
-### 1. 模块化设计模式
-将系统划分为多个功能独立的模块，每个模块负责特定的功能，降低了系统复杂度，提高了代码复用性。
-
-### 2. 工厂模式
-在特征提取等模块中，根据不同需求创建不同的特征提取器（如SIFT、SURF等），便于扩展新的特征提取算法。
-
-### 3. 策略模式
-在重建模块中，可以选择使用pycolmap或colmap进行重建，通过策略模式可以方便地切换不同的实现。
-
-### 4. 观察者模式
-在工作流管理中，通过CGraph实现任务节点间的依赖管理，当某个任务完成时，自动触发后续依赖任务的执行。
 
 ## TODO List
 
-### 核心框架开发
-- [✔] 根据viewgraph对场景使用Ncut算法进行分割与扩展
-- [ ] 设计图像节点表示类
-- [ ] 实现节点间边的关系定义
-- [ ] 添加DAG构建和管理功能
-
 ### 特征提取与匹配模块
-- [ ] 集成OpenCV特征提取算法(SIFT, SURF等)
-- [ ] 实现特征匹配功能
-- [ ] 添加特征匹配优化算法
-- [ ] 构建图像间匹配关系图
+- [✔] 集成SIFT特征提取(使用Colmap进行特征提取)
+- [✔] 实现特征匹配功能(使用Colmap提供暴力匹配与空间匹配)
+- [ ] 添加Hloc相关DL提点与匹配功能
 
-### SfM核心算法实现
-- [ ] 相机模型初始化
-- [ ] 实现基础的三角化算法
-- [ ] 添加BA(Bundle Adjustment)优化模块
-- [ ] 实现增量式SfM流程
+### View-Graph维护模块
+- [ ] 循环旋转误差过滤View-Graph
+- [ ] 检测最大连通分量过滤View-Graph
+- [ ] 使用全局旋转平均过滤View-Graph
 
-### DAG调度与分布式处理
-- [ ] 设计子任务划分算法
-- [ ] 实现基于DAG的任务调度器
-- [ ] 添加并行处理支持
-- [ ] 实现子网对齐与融合算法
+### View-Graph分割与扩展模块
+- [ ] 实现Ncut算法对View-Graph进行分割
+- [ ] 基于分割后子块进行扩展
+
+### 重建模块
+- [ ] 实现子块单独重建(暂采用Colmap原天增量重建)
+
+### 子模型合并模块
+- [ ] 构建子模型图
+- [ ] 检测图最大联通分量
+- [ ] 使用Kruskal算法计算最小生成树
+- [ ] 找到锚点，作为对齐参考
+
+### 三角化与全局BA模块
+- [ ] 添加三角化算法
+- [ ] 添加全局BA算法
+
+### CGraph管理模块
 
 ### 工具与辅助功能
-- [ ] 添加点云可视化工具
-- [ ] 实现相机轨迹可视化
+- [ ] 添加View-Graph分割可视化工具
 - [ ] 添加日志记录功能
 - [ ] 编写单元测试
 
 ### 文档完善
-- [ ] 补充项目详细说明
-- [ ] 添加API文档
 - [ ] 编写使用示例
 - [ ] 添加安装指南
+
+## References
+
+如果使用本项目进行研究，请引用原始 DAGSfM 项目及相关论文：
+
+```bibtex
+@article{chen2020graph,
+  title={Graph-Based Parallel Large Scale Structure from Motion},
+  author={Chen, Yu and Shen, Shuhan and Chen, Yisong and Wang, Guoping},
+  journal={Pattern Recognition},
+  pages={107537},
+  year={2020},
+  publisher={Elsevier}
+}
+
+@inproceedings{schoenberger2016sfm,
+  author={Sch\"{o}nberger, Johannes Lutz and Frahm, Jan-Michael},
+  title={Structure-from-Motion Revisited},
+  booktitle={Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2016},
+}
+```
+
+有关原始 DAGSfM 实现的更多信息，请访问: [https://github.com/AIBluefisher/DAGSfM](https://github.com/AIBluefisher/DAGSfM)
