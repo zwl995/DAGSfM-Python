@@ -1,0 +1,11 @@
+# N-cut partitioning parameters
+ncut_k: 5
+expansion_ratio: 0.2
+
+# Cluster expansion parameters
+max_image_overlap: 5
+completeness_ratio: 0.8
+
+# 可选：其他可能需要的参数
+# min_cluster_size: 10
+# similarity_threshold: 0.1

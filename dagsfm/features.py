@@ -104,6 +104,34 @@ class FeatureMatcher:
         
         return database_path
     
+    def spatial_matcher(self, database_path):
+        """
+        Perform spatial matching on all images in the database
+        
+        Args:
+            database_path (str): Path to the database file
+            
+        Returns:
+            str: Path to the database file with computed matches
+        """
+        # Build COLMAP exhaustive_matcher command
+        cmd = (
+            f"{self.colmap_path} spatial_matcher "
+            f"--database_path={database_path}"
+        )
+        
+        # Add any additional COLMAP configuration parameters
+        for k, v in self.matcher_cfg.items():
+            cmd += f" --{k}={v}"
+        
+        # Execute the command
+        try:
+            subprocess.run(cmd, shell=True, check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"COLMAP exhaustive matching failed: {e}")
+        
+        return database_path
+    
     def build_matching_graph(self, features_list):
         """
         Build a graph representing matching relationships between images

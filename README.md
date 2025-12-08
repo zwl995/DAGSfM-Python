@@ -14,6 +14,7 @@ DAGSfM-Python/
 │   ├── __init__.py         # 包初始化文件
 │   ├── features.py         # 特征提取与匹配模块
 │   ├── partition.py        # 场景分块模块（基于N-cut算法）
+│   ├── view_graph.py       # View-Graph构建与维护模块
 │   ├── reconstruction.py   # 子块重建模块
 │   ├── merging.py          # 子块合并与BA模块
 │   ├── pipeline.py         # CGraph工作流管理模块
@@ -22,6 +23,7 @@ DAGSfM-Python/
 │   ├── __init__.py         # 测试包初始化文件
 │   ├── test_features.py    # 特征模块测试
 │   ├── test_partition.py   # 分块模块测试
+│   ├── test_view_graph.py  # View-Graph模块测试
 │   ├── test_reconstruction.py # 重建模块测试
 │   ├── test_merging.py     # 合并模块测试
 │   ├── test_pipeline.py    # 工作流模块测试
@@ -60,13 +62,13 @@ DAGSfM-Python/
 - [ ] 添加Hloc相关DL提点与匹配功能
 
 ### View-Graph维护模块
-- [ ] 循环旋转误差过滤View-Graph
-- [ ] 检测最大连通分量过滤View-Graph
-- [ ] 使用全局旋转平均过滤View-Graph
+- [] 循环旋转误差过滤View-Graph
+- [] 检测最大连通分量过滤View-Graph
+- [] 使用全局旋转平均过滤View-Graph
 
 ### View-Graph分割与扩展模块
-- [ ] 实现Ncut算法对View-Graph进行分割
-- [ ] 基于分割后子块进行扩展
+- [✔] 实现Ncut算法对View-Graph进行分割
+- [✔] 基于分割后子块进行扩展
 
 ### 重建模块
 - [ ] 实现子块单独重建(暂采用Colmap原天增量重建)

@@ -88,6 +88,7 @@ def test_feature_matching():
         # 执行特征匹配
         print("正在执行特征匹配...")
         result = matcher.exhaustive_matcher(DATABASE_PATH)
+        result = matcher.spatial_matcher(DATABASE_PATH)
         
         print("特征匹配完成！")
         print(f"返回数据库路径: {result}")
@@ -119,8 +120,8 @@ def test_full_pipeline():
 
 if __name__ == "__main__":
     # 配置真实测试路径 - 请在这里修改为您实际的路径
-    IMAGE_PATH = "/ws/zwl/Data/0718_data/DJI_small_scene/images"      # 修改为您的实际图像路径
-    DATABASE_PATH = "/ws/zwl/Data/0718_data/DJI_small_scene/database_dagsfm_python.db" # 修改为您的实际数据库路径
+    IMAGE_PATH = "/ws/18_nfs/zwl/Data/DJI/jimeimigu/images"      # 修改为您的实际图像路径
+    DATABASE_PATH = "/ws/18_nfs/zwl/Data/DJI/jimeimigu/database_dagsfm_python.db" # 修改为您的实际数据库路径
     
     print("选择要运行的测试:")
     print("1. 仅测试特征提取")
